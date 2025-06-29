@@ -1,175 +1,71 @@
-# Player Re-Identification in Sports Videos
+Player Re-Identification in Sports Videos
+What this project does
+This project helps track players in sports videos and makes sure each player keeps the same ID throughout the video. This is useful even if they go off-screen and come back. Think of it as giving each player a permanent name tag for the whole game footage.
 
-## Overview
+How it works (Simplified)
+Find Players: We use an AI model (YOLOv11) to spot all the players in each frame.
 
-This project implements a computer vision solution for **player re-identification** in sports videos. The system tracks players throughout a video and maintains consistent IDs even when players temporarily leave the frame and re-enter (e.g., during goal events).
+Unique "Look": For each player, we create a digital "fingerprint" based on their appearance (like their jersey color, patterns, and overall shape). We use advanced AI (ResNet18) and other visual details for this.
 
-## Problem Statement
+Follow Movement: We predict where players will move next to keep track of them smoothly.
 
-Given a 15-second video (`15sec_input_720p.mp4`), the system:
-- Detects players using a pre-trained YOLOv11 model
-- Assigns unique IDs based on initial detections
-- Maintains consistent IDs when players re-enter the frame
-- Simulates real-time re-identification and tracking
+Match & Re-identify: We then match new sightings to existing players. If a player was previously tracked but disappeared, we use their "fingerprint" to identify them when they reappear, giving them back their original ID.
 
-## Technical Approach
+Getting Started
+What you need
 
-### Core Components
+Python 3.8 or newer
 
-1. **Player Detection**: YOLOv11 model fine-tuned for player detection
-2. **Feature Extraction**: Multi-modal features (visual + spatial + temporal)
-3. **Tracking Algorithm**: Kalman filter-based tracking with Hungarian assignment
-4. **Re-identification**: Similarity matching using combined feature vectors
-5. **ID Management**: Robust ID assignment and maintenance system
+A decent computer, a graphics card (GPU) helps a lot!
 
-### Algorithm Pipeline
+At least 8GB of RAM
 
-```
-Input Frame → Player Detection → Feature Extraction → 
-Track Association → Kalman Prediction → Re-identification → 
-ID Assignment → Output with Consistent IDs
-```
+Quick Setup
 
-### Key Features
+Get the code:
 
-- **Multi-modal Feature Extraction**:
-  - Deep CNN features (ResNet18)
-  - Color histograms (HSV)
-  - Texture features (LBP, gradients)
-  - Spatial features (body proportions)
+Download the zip file of my repository.
+Unzip the file and open it in VS Code.
 
-- **Robust Tracking**:
-  - Kalman filters for motion prediction
-  - Hungarian algorithm for optimal assignment
-  - Spatial and temporal consistency checks
+Set up your environment:
 
-- **Re-identification**:
-  - Feature similarity matching
-  - Threshold-based re-ID decisions
-  - Historical feature averaging
-
-## Installation
-
-### Prerequisites
-- Python 3.8+
-- CUDA-capable GPU (recommended)
-- 8+ GB RAM
-
-### Setup Instructions
-
-1. **Clone/Download Project**
-```bash
-mkdir player_reidentification
-cd player_reidentification
-```
-
-2. **Create Virtual Environment**
-```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install Dependencies**
-```bash
+source venv/bin/activate  # Use `venv\Scripts\activate` on Windows
 pip install -r requirements.txt
-```
 
-4. **Download Models and Data**
-   - Download YOLOv11 model from: [Google Drive Link](https://drive.google.com/file/d/1-5fOSHOSB9UXyP_enOoZNAMScrePVcMD/view)
-   - Place model file as: `models/yolov11_player_detection.pt`
-   - Place input video as: `input/15sec_input_720p.mp4`
+Download AI Model & Sample Video:
 
-5. **Create Directory Structure**
-```bash
-mkdir -p models input output results
-```
+Download the pre-trained YOLOv11 model from the below link which is used for player detection: Google Drive Link
 
-## Usage
+Place it in a folder named models/yolov11_player_detection.pt
 
-### Basic Usage
-```bash
-python main.py --input input/15sec_input_720p.mp4 --output output/tracked_video.mp4
-```
+Place your input video (e.g., 15sec_input_720p.mp4) in a folder named input/ its already placed in the repository do cross-check once in your VS Code.
 
-### Advanced Usage
-```bash
-python main.py \
-    --input input/15sec_input_720p.mp4 \
-    --output output/tracked_video.mp4 \
-    --model models/yolov11_player_detection.pt \
-    --confidence 0.5 \
-    --max_disappeared 30 \
-    --reid_threshold 0.7
-```
+How to Run It
+Just open your terminal in the project folder and run:
 
-### Parameters
+python main.py 
+or
+python3 main.py 
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `--input` | Input video path | `input/15sec_input_720p.mp4` |
-| `--output` | Output video path | `output/tracked_video.mp4` |
-| `--model` | YOLO model path | `models/yolov11_player_detection.pt` |
-| `--confidence` | Detection confidence threshold | `0.5` |
-| `--max_disappeared` | Max frames before losing track | `30` |
-| `--reid_threshold` | Re-ID similarity threshold | `0.7` |
+This will process the video and save the result to output/tracked_video.mp4.
 
-## Output
+What you get
+A new video showing players with consistent ID numbers and their bounding boxes.
 
-The system generates:
+A report (.json file) with tracking details and statistics.
 
-1. **Annotated Video** (`output/tracked_video.mp4`)
-   - Bounding boxes with consistent IDs
-   - Confidence scores
-   - Color-coded tracks
+A graph (.png image) summarizing tracking performance.
 
-2. **Tracking Results** (`output/tracked_video_results.json`)
-   - Complete tracking history
-   - Performance metrics
-   - Re-identification statistics
+Troubleshooting & Tips
+Model Not Found?: Make sure models/yolov11_player_detection.pt is in the right place.
 
-3. **Visualization** (`results/tracking_metrics.png`)
-   - Performance graphs
-   - Track statistics
-   - Detection metrics
+IDs Jumping Around?: This means the system is confused. You can try adjusting parameters like --max_disappeared (how long a player can be gone before losing their ID) or --reid_threshold (how similar they need to be to be re-identified).
 
-## Performance Metrics
+Too Slow?: Processing videos, especially with AI, can take time. A good graphics card helps a lot. You can also try using a lower resolution video or disabling "deep features" in the code for speed.
 
-- **Tracking Accuracy**: Percentage of correctly maintained IDs
-- **Re-ID Success Rate**: Success rate for re-entering players  
-- **ID Switches**: Number of incorrect ID changes
-- **Processing Speed**: Frames per second
-- **Detection Consistency**: Variance in detections per frame
+File Structure
 
-## Algorithm Details
-
-### 1. Player Detection
-```python
-# YOLOv11 detection with confidence filtering
-results = model(frame, conf=confidence_threshold, classes=[0])
-```
-
-### 2. Feature Extraction
-- **Deep Features**: ResNet18 backbone (512-dim)
-- **Color Features**: HSV histograms + dominant colors (54-dim)
-- **Texture Features**: LBP + gradients (33-dim)
-- **Spatial Features**: Aspect ratio + body proportions (5-dim)
-
-### 3. Track Association
-```python
-# Cost matrix combining IoU, feature similarity, and spatial distance
-cost = 1.0 - (0.4 * iou + 0.4 * feature_sim + 0.2 * spatial_consistency)
-```
-
-### 4. Re-identification
-```python
-# Feature similarity using cosine distance
-similarity = 1 - cosine_distance(track_features, detection_features)
-reid_success = similarity > reid_threshold
-```
-
-## File Structure
-
-```
 player_reidentification/
 ├── main.py                 # Main entry point
 ├── player_tracker.py       # Core tracking algorithm  
@@ -186,88 +82,5 @@ player_reidentification/
 │   └── tracked_video_results.json
 └── results/
     └── tracking_metrics.png
-```
 
-## Code Architecture
 
-### Class Hierarchy
-```
-PlayerTracker (main tracking system)
-├── PlayerTrack (individual track management)
-├── FeatureExtractor (visual features)
-├── KalmanTracker (motion prediction)
-└── Visualizer (result visualization)
-```
-
-### Data Flow
-```
-Video Frame → Detection → Feature Extraction → 
-Track Matching → Kalman Update → Re-ID Check → 
-Output Generation
-```
-
-## Customization
-
-### Tuning Parameters
-
-1. **Detection Sensitivity**
-   - Adjust `confidence` threshold (0.3-0.8)
-   - Modify `max_disappeared` frames (20-50)
-
-2. **Re-identification Accuracy**
-   - Tune `reid_threshold` (0.5-0.9)
-   - Adjust feature weights in cost matrix
-
-3. **Performance vs Accuracy**
-   - Enable/disable deep features
-   - Modify feature vector dimensions
-
-### Adding New Features
-
-1. **Custom Feature Extractors**
-```python
-class CustomFeatureExtractor:
-    def extract_features(self, image_crop):
-        # Implement custom feature extraction
-        return feature_vector
-```
-
-2. **Alternative Tracking Methods**
-```python
-class CustomTracker:
-    def track_frame(self, frame, frame_num):
-        # Implement custom tracking logic
-        return detections
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Model Loading Error**
-   - Ensure YOLOv11 model is in correct path
-   - Check model file integrity
-
-2. **Low Detection Rate**
-   - Reduce confidence threshold
-   - Check video quality and lighting
-
-3. **Frequent ID Switches**
-   - Increase `max_disappeared` parameter
-   - Lower `reid_threshold` for more aggressive re-ID
-
-4. **Slow Processing**
-   - Disable deep feature extraction
-   - Reduce video resolution
-   - Use GPU acceleration
-
-### Performance Optimization
-
-1. **Speed Improvements**
-   - Use smaller input resolution
-   - Reduce feature vector dimensions
-   - Enable GPU acceleration
-
-2. **Accuracy Improvements**
-   - Use higher confidence threshold
-   - Enable
