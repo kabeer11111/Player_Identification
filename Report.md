@@ -1,4 +1,4 @@
-<img width="1352" alt="Screenshot 2025-06-30 at 2 28 15 AM" src="https://github.com/user-attachments/assets/ab5e9ada-7dd0-4eaa-83ff-1645127992d9" /># Player Re-Identification System: Project Report
+## Player Re-Identification System: Project Report
 
 ## 1. Approach and Methodology
 
@@ -122,8 +122,13 @@ The system demonstrates strong potential for sports analytics applications, with
 ## Images of the issues I encountered:-
 - ### Ids were repeating.
 <img width="1319" alt="Screenshot 2025-06-25 at 3 05 26 AM" src="https://github.com/user-attachments/assets/769ec2aa-6cbc-45ab-b286-9606b5dc9c07" />
+
+
+
 - ### Unneceessay objects were detected i.e tracking was not upto the mark.
 <img width="1204" alt="Screenshot 2025-06-28 at 5 50 50 AM" src="https://github.com/user-attachments/assets/840ecb3e-f2f9-488f-90ff-d93747fb019c" />
+
+
 - ### Unneceessay objects were detected i.e tracking was not upto the mark.
 <img width="881" alt="Screenshot 2025-06-28 at 5 50 29 AM" src="https://github.com/user-attachments/assets/89099044-3a51-49eb-8805-5d11484258b8" />
 
