@@ -1,4 +1,4 @@
-## Player Re-Identification System: Project Report
+# Player Re-Identification System: Project Report
 
 ## 1. Approach and Methodology
 
